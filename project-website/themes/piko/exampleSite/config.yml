@@ -1,5 +1,5 @@
 ---
-baseURL: https://quackquack.forkprocess.com/
+baseURL: https://piko-heksagon.netlify.app/
 languageCode: en-us
 title: Piko
 theme: piko
@@ -14,7 +14,7 @@ enableEmoji: true
 outputs:
   home:
   - HTML
-  # - RSS
+  - RSS
   - JSON
 minify:
   disableCSS: false
@@ -37,23 +37,23 @@ params:
     bing:
       SiteVerificationTag: # Bing Site Verification
   env: production
-  author: Jihoon Og 
-  description: CMPUT 503 Course Project Website
-  math: True
+  author: Your Name
+  description: Your website description
+  math: false
   images:
   - "/uploads/og.webp"
   label:
-    title: _CMPUT-503 Robotics Project_
-    text: Welcome to my CMPUT-503 course project's website
+    title: _Piko Title_
+    text: Welcome to Piko
     icon: /uploads/zap.svg
     iconHeight: "35"
     iconWIdth: "35"
-  comments: false
+  comments: true
   mainSections:
   - blog
-  ShowShareButtons: false
+  ShowShareButtons: true
   ShowCodeCopyButtons: true
-  ShowRelated: false
+  ShowRelated: true
   CookieNotice: We use cookies to improve your experience on our site and to show
     you relevant advertising.
   CookieLink: /legal/privacy/#cookies-and-web-beacons
@@ -73,41 +73,41 @@ params:
     # Hero Section
     disableHeroSection: false
     heroUpperTitle: 
-    heroTitle: Revenge of the Quack
-    heroDescription: CMPUT-503 Experimental Mobile Robotics Project Website 
+    heroTitle: Piko
+    heroDescription: Lightweight theme for your every need
     heroCTAPrimaryText: Blog
     heroCTAPrimaryUrl: "/blog/"
     heroCTASecondaryText: Contact Me
     heroCTASecondaryUrl: "/contact/"
-    heroBackgroundImage: "/uploads/robot.jpeg"
+    heroBackgroundImage: "/uploads/portfolio-1.webp"
     # Blog Section
     disableBlogSection: false
     blogTitle: Latest Posts
     blogDescription: This is my latest blog posts
     seeMoreText: More Posts
     # About Section    
-    disableAboutSection: true
+    disableAboutSection: false
     aboutTitle: About
     aboutDescription: Just something about me
     aboutImgUrl: "/uploads/self.webp"
     aboutContent: Hi guys. This is where you put something about yourself.
     # Portfolio Section
-    disablePortfolioSection: true
+    disablePortfolioSection: false
     portfolioTitle: Portfolio
     portfolioDescription: Some of my works
-    # portfolio:
-    # - imageUrl: /uploads/portfolio-1.webp
-    #   alt: # image alt for better SEO
-    #   description: Portfolio One.
-    #   websiteUrl: #
-    # - imageUrl: /uploads/portfolio-2.webp
-    #   alt: # image alt for better SEO
-    #   description: Portfolio Two.
-    #   websiteUrl: #
-    # - imageUrl: /uploads/portfolio-3.webp
-    #   alt: # image alt for better SEO
-    #   description: Portfolio Three.
-    #   websiteUrl: #
+    portfolio:
+    - imageUrl: /uploads/portfolio-1.webp
+      alt: # image alt for better SEO
+      description: Portfolio One.
+      websiteUrl: #
+    - imageUrl: /uploads/portfolio-2.webp
+      alt: # image alt for better SEO
+      description: Portfolio Two.
+      websiteUrl: #
+    - imageUrl: /uploads/portfolio-3.webp
+      alt: # image alt for better SEO
+      description: Portfolio Three.
+      websiteUrl: #
   # Search Options (https://fusejs.io/)
   fuseOpts:
     isCaseSensitive: false
@@ -138,15 +138,15 @@ menus:
     pre: search
     url: "/search"
     weight: "30"
-  # - name: Contact
-  #   title: Contact
-  #   pre: mail
-  #   url: "/contact"
-  #   weight: "40"
+  - name: Contact
+    title: Contact
+    pre: mail
+    url: "/contact"
+    weight: "40"
   - name: Github
     title: 
     pre: github
-    url: https://github.com/jihoonog/CMPUT-503
+    url: https://github.com/heksagonnet/piko
     weight: "50"
   search: # Search page's quick links
   - name: Categories

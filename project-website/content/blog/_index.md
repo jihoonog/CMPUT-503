@@ -1,6 +1,6 @@
 ---
 title: Blog
-image: "/uploads/portfolio-2.webp"
-description: My blog's description here
+image: "/uploads/robot.jpeg"
+description: My entire documented journey of CMPUT-503
 
 ---
