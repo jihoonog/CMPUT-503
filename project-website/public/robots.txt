@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://quackquack.forkprocess.com/sitemap.xml
