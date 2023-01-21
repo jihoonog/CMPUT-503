@@ -11,6 +11,7 @@ buildDrafts: false
 buildFuture: false
 buildExpired: false
 enableEmoji: true
+unsafe: true
 outputs:
   home:
   - HTML

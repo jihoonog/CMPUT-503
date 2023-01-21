@@ -30,6 +30,11 @@ Flashing the SD card wasn't too bad it was just long. Running this command `dts 
 
 Note: I had to do this multiple times because I had issues getting my bot to move but that will be described later.
 
+
+## Dashboard
+
+![Duckiebot Dashboard](https://user-images.githubusercontent.com/25281309/213753468-49cb40f8-4640-4e86-8d48-ab5757ff36db.png)
+
 ## Getting the robot to move
 
 At first the robot didn't move using `dts duckiebot keyboard_control`. 
@@ -40,8 +45,7 @@ I followed the debugging steps, checking to see if the `duckiebot-interface` is 
 Following the guide on calibrating the motors I drove the robot in a straight line to see the drift. It it drifted left then I would decrease the trim value and if it drifted right I would increase the trim value. I basically used binary search to find a good enough trim value such that the robot would travel straight with at most a 10 cm drift driving 2 meters.
 I also set the gain value to 0.85 to make it easier for the robot to drive in a straight line.
 
-![Moving in a stright line](https://user-images.githubusercontent.com/25281309/213749899-fe5847b6-b30c-4211-b107-2a5cf63bb924.mp4)
-
+{{< youtube _oTIF_Z0tsU >}}
 ## Calibrating the camera
 
 Calibrating the camera was pretty easy. Following the instructions outlined in the Duckiebot documentation. I was able to calibrate both the intrinsic and extrinsic values of the robot by calling:
@@ -57,4 +61,4 @@ and follow the instructions outlined from the terminal.
 
 ## Lane following
 
-![lane-following-video](https://user-images.githubusercontent.com/25281309/213841632-b91a5550-10d3-4cd7-82fd-6deab8672402.mp4)
+{{< youtube T9IJy8rgorI >}}
