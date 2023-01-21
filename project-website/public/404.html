@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset="UTF-8" />
+<title>
+  404 Page not found | My New Hugo Site
+</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="canonical" href="http://example.org/404.html" />
+
+<!-- Main Stylesheet --> 
+
+<link rel="stylesheet" href="http://example.org/sass/main.min.css" />
+
+<!-- Nav Stylesheet -->
+
+<link rel="stylesheet" href="http://example.org/sass/nav.min.css" />
+
+<!-- plugins CSS --> 
+
+<link rel="icon" href="http://example.org/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://example.org/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://example.org/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://example.org/apple-touch-icon.png">
+<link rel="mask-icon" href="http://example.org/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.92.2" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="404 Page not found"/>
+<meta name="twitter:description" content=""/>
+<meta property="og:title" content="404 Page not found" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://example.org/404.html" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="404 Page not found"/>
+<meta name="twitter:description" content=""/>
+</head>
+    <body>
+<nav class="desktop">
+  <ul>
+    <li>
+      <a class="logo" href="http://example.org/" accesskey="h" title="My New Hugo Site (Alt + h)">
+        <img
+          src="/"
+          alt="My New Hugo Site"
+          width=""
+          height=""
+        ></img>
+        <h3 style="margin-bottom: 0;">
+          <strong>My New Hugo Site</strong>
+        </h3>
+      </a>
+    </li>
+    <li class="toggle-container">
+      <input type="checkbox" id="switch" />
+      <label for="switch">
+        <i id="darkIcon" data-feather="moon"></i>
+        <i id="lightIcon" data-feather="sun"></i>
+      </label>
+    </li>
+  </ul>
+  <ul class="desktop-navigation">
+    
+  </ul>
+  <ul class="mobile-navigation">
+    <li>
+      <button id="menuOpen" onclick="openMobile()" aria-label="Menu closed">
+        <i data-feather="menu"></i>
+      </button>
+      <button id="menuClose" onclick="openMobile()" aria-label="Menu opened">
+        <i data-feather="x"></i>
+      </button>
+    </li>
+  </ul>
+</nav>
+
+
+
+<aside class="sidebar" id="mobileNav" style="display: none;">
+    <nav>
+      <ul>
+        
+      </ul>
+    </nav>
+</aside><main>
+<div class="container min-h-80 text-center" style="display:flex;justify-content:center;align-items:center">
+    <div>
+        <h1>404 | Nothing is found</h1>
+        <a role="button" href="http://example.org/">Return home</a>
+    </div>    
+</div>
+
+        </main>
+<footer class="text-center">
+    <span>&copy; 2023 <a href="http://example.org/">My New Hugo Site</a></span>
+    <div>
+        <a href="http://example.org/legal/privacy">Privacy Policy</a> 
+        <span>&</span>
+        <a href="http://example.org/legal/terms-and-conditions">Terms and Conditions</a>
+    </div>
+</footer><article class="hidden" id="cookie-banner">
+  <div>
+       <span>
+          
+       </span>
+  </div>
+  <footer>
+       <a role="button" id="consent-cookies">
+              Close
+       </a>
+       <a role="button" class="secondary" href="/" ></a>     
+  </footer>
+</article>
+
+<!-- Cookies Script -->
+
+<script async src="http://example.org/js/cookie.min.js" layout="container"></script>
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<!-- JS Plugins -->
+
+
+<!-- Main Script -->
+
+<script src="http://example.org/js/script.min.js" layout="container"></script></body>
+</html>
