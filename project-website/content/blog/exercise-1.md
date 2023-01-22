@@ -83,3 +83,7 @@ Once the container was running I opened the keyboard control for my bot and pres
 {{< youtube T9IJy8rgorI >}}
 
 Note: I had to tune the parameters so that I can make the turns in duckietown. I had to increase the `k_theta` and `k_d` values a little bit so the robot can turn more aggressively and make the turns without going over the lines.
+
+## Colour Detection
+
+This was the most difficult part of the exercise, something I put way too much effort into when we are not going to use this code base for anything as we are going to use ROS to get the images from the camera node, but it was a good exercise nonetheless. I followed the instructions from the basic development guide from Duckietown and found that a lot of the documentation was outdated. Particularly the GStreamer pipeline code was not for the DB21 platform. I found the correct GStreamer pipeline code from the `dt-duckiebot-interface` repository and used that to open the camera. However, this still lead to an issue initialization the camera in OpenCV. I think the main issue is caused by missing runtime environments that GStreamer requires that isn't being initialized by Dockerfile. I might be able to find the correct initialization procedure in the `dt-duckiebot-interface` repository but at this point I spent too much time trying to get this minor code to work. So I just ignored it for now.

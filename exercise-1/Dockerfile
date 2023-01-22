@@ -1,14 +1,4 @@
-# FROM duckietown/dt-duckiebot-interface:daffy-arm32v8
-FROM ubuntu:22.04
-
-
-ENV DISPLAY=${DISPLAY}
-
-# Don't need the next two if you're using the duckiebot interface
-RUN apt-get update -y
-RUN apt-get install -y python3-pip python3-dev build-essential ffmpeg libsm6 libxext6  
-
-
+FROM duckietown/dt-duckiebot-interface:daffy-arm64v8
 
 COPY requirements.txt ./
 

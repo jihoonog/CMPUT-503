@@ -19,30 +19,18 @@ def gst_pipeline_string():
     # This is sport mode
     exposure_time = [100000, 80000000]
     # Camera Mode 3
-    camera_mode_id = 3
+    camera_mode_id = 0
     res_w = 1640
     res_h = 1232
     fps = 30
+
+
     if USE_HW_ACCELERATION:
-        gst_pipeline = """ \
-            nvar`guscamerasrc \
-            sensor-mode={} exposuretimerange="{} {}" ! \
-            video/x-raw(memory:NVMM), width={}, height={}, format=NV12, framerate={}/1 ! \
-            nvjpegenc ! \
-            appsink \
-        """.format(
+        gst_pipeline = """nvarguscamerasrc sensor-mode={} exposuretimerange="{} {}" ! video/x-raw(memory:NVMM),width={},height={},format=NV12,framerate={}/1 ! nvjpegenc ! appsink""".format(
             camera_mode_id, *exposure_time, res_w, res_h, fps
         )
     else:
-        gst_pipeline = """ \
-            nvarguscamerasrc \
-            sensor-mode={} exposuretimerange="{} {}" ! \
-            video/x-raw(memory:NVMM), width={}, height={}, format=NV12, framerate={}/1 ! \
-            nvvidconv ! 
-            video/x-raw, format=BGRx ! 
-            videoconvert ! \
-            appsink \
-        """.format(
+        gst_pipeline = """nvarguscamerasrc sensor-mode={} exposuretimerange='{} {}' ! 'video/x-raw(memory:NVMM),width={},height={},format=NV12,framerate={}/1' ! nvvidconv ! 'video/x-raw,format=BGRx' ! videoconvert ! appsink""".format(
             camera_mode_id, *exposure_time, res_w, res_h, fps
         )
     print(f"Using GST pipeline: {gst_pipeline}")
@@ -50,8 +38,10 @@ def gst_pipeline_string():
 
 
 camera = cv2.VideoCapture()
-camera.open(0)
-# camera.open(gst_pipeline_string(), cv2.CAP_GSTREAMER)
+camera.open(gst_pipeline_string(), cv2.CAP_GSTREAMER)
+
+if not camera.isOpened():
+    print("Camera cannot be opened")
 
 while(True):
     ret, image_frame = camera.read()
@@ -128,11 +118,11 @@ while(True):
             cv2.putText(image_frame, "Yellow", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255))    
             print("Yellow: ", x,y,w,h)
     
-    sleep(1)
+    # sleep(1)
     
     # cv2.imshow("Red Colour", red_mask)
-    # cv2.imshow("Multiple Color Detection in Real-Time", image_frame)
-    # if cv2.waitKey(10) & 0xFF == ord('q'):
-    #     camera.release()
-    #     cv2.destroyAllWindows()
-    #     break
+#    cv2.imshow("Multiple Color Detection in Real-Time", image_frame)
+#    if cv2.waitKey(10) & 0xFF == ord('q'):
+#        camera.release()
+#        cv2.destroyAllWindows()
+#        break
