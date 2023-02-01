@@ -1,0 +1,6 @@
+[submodule "CMPUT-503-Exercise-2"]
+	path = CMPUT-503-Exercise-2
+	url = git@github.com:jihoonog/CMPUT-503-Exercise-2.git
+[submodule "exercise-2"]
+	path = exercise-2
+	url = git@github.com:jihoonog/CMPUT-503-Exercise-2.git
