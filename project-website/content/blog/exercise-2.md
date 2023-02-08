@@ -51,13 +51,26 @@ Below is a screenshot of `rqt_image_view` showing the image being published to t
 
 ![image sub](/uploads/new_node_rqt_image_view.png)
 
-## Questions and Answers
+## Odometry
+
+In order to know where our robot is within its workspace based on movement alone we first need to know the robot's odometry. The motors themselves have rotor encoders that counts the number of ticks (or degrees) of rotation that each wheel have rotated. Counting the number of ticks and using a simple equation (see below) allows us to determine how far each wheel has moved laterally.
+
+$$
+\Delta X = \frac{2\cdot\pi\cdot R \cdot N_{ticks}}{N_{total}}
+$$
+
+Where: 
+- {{< rawhtml >}} \(R\) {{< /rawhtml >}} is the radius
+- {{< rawhtml >}} \(N_{ticks}\) {{< /rawhtml >}} is the number of ticks measured
+- {{< rawhtml >}} \(N_{total}\) {{< /rawhtml >}} is the number of total ticks for a full rotation which in our case is 135.
+
+Now that we can calculate the distance each wheel has traveled we can use transformation matrices to convert them from the robot frame to the world frame and vice versa.
 
 1. What is the relation between your initial robot frame and world frame? How do you transform between them?
 
 The initial world frame is 0.32, 0.32 in the x and y coordinates respectively and the theta component is
 {{< rawhtml >}}
-\(\dfrac{1*\pi}{2}\)
+\(\dfrac{1}{2}\pi\)
 {{< /rawhtml >}}.
 The robot frame is 0, 0 for the x and y coordinates respectively with the theta component being the same. We can convert between the two frames using a forward and reverse kinematics equation.
 To convert between the world frame to the robot frame we use this equation:
@@ -119,4 +132,23 @@ The final location of the robot is: 0.2, 0.4, 90 degress for x, y, and theta res
 It's sometimes reasonably close. Within 30 centimeters.
 
 
+## Correction
+
+![](/uploads/diagram-20230208.svg)
+
+$$
+\vec{R}\times\vec{T} = \sin(\theta) ||\vec{R} || \cdot || \vec{T}|| u
+$$
+
+$$
+\vec{R} \cdot \vec{T} = \cos(\theta) ||\vec{R} || \cdot || \vec{T}||
+$$
+
+## PID Control
+
+$$
+u(t) = K_pe(t) + K_i \int_0^te(\tau) d\tau + K_d\frac{de(t)}{dt}
+$$
 # References
+
+
