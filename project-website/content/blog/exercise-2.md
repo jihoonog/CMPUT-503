@@ -1,7 +1,7 @@
 ---
 author: "Jihoon Og"
 title: "Exercise 2"
-date: 
+date: 2023-02-08
 description: "Second Lab Assignment"
 tags: ["bulding","programming", "ROS", "docker","odometry"]
 categories: ["robot"]
@@ -70,22 +70,28 @@ Now that we can calculate the distance each wheel has traveled we can use transf
 
 The initial world frame is 0.32, 0.32 in the x and y coordinates respectively and the theta component is
 {{< rawhtml >}}
-\(\dfrac{1}{2}\pi\)
+\(\dfrac{\pi}{2}\)
 {{< /rawhtml >}}.
-The robot frame is 0, 0 for the x and y coordinates respectively with the theta component being the same. We can convert between the two frames using a forward and reverse kinematics equation.
+The robot frame is 0, 0, 0 for the x, y, and theta component respectively. 
+We can convert between the two frames using a forward and reverse kinematics equation.
 To convert between the world frame to the robot frame we use this equation:
 
 $$
-\begin{bmatrix}\dot{x_I}\\\\\dot{y_I}\\\\\dot{\theta_I}\\ \end{bmatrix}  = \begin{bmatrix}\cos(\theta) & -\sin(\theta) & 0\\\sin(\theta) & \cos(\theta) & 0\\\\ 0 & 0 & 1\\ \end{bmatrix} \begin{bmatrix}   \dot{x_R}\\\\\dot{y_R}\\\\\dot{\theta_R}\\ \end{bmatrix}
+\begin{bmatrix}\dot{x_I}\\\\\dot{y_I}\\\\\dot{\theta_I}\\ \end{bmatrix}  = \begin{bmatrix}\cos(\theta) & -\sin(\theta) & 0\\\sin(\theta) & \cos(\theta) & 0\\\\ 0 & 0 & 1\\ \end{bmatrix} \begin{bmatrix}   \dot{x_R}\\\\\dot{y_R}\\\\\dot{\theta_R}\\ \end{bmatrix} + \begin{bmatrix} 0.32 \\\\ 0.32 \\\\ \frac{/pi}{2}\end{bmatrix}
 $$
+
+The last term is the offset term that is used to account for the different origins between the robot frame and the world frame.
 
 2. How do you convert the location and theta at the initial robot frame to the world frame?
 
 To convert between the robot frame to the world frame we use this equation:
 
 $$
-\begin{bmatrix}\dot{x_R}\\\\\dot{y_R}\\\\\dot{\theta_R}\\ \end{bmatrix}  = \begin{bmatrix}\cos(\theta) & \sin(\theta) & 0\\\\ -\sin(\theta) & \cos(\theta) & 0\\\\ 0 & 0 & 1\\ \end{bmatrix} \begin{bmatrix}   \dot{x_I}\\\\\dot{y_I}\\\\\dot{\theta_I}\\ \end{bmatrix}
+\begin{bmatrix}\dot{x_R}\\\\\dot{y_R}\\\\\dot{\theta_R}\\ \end{bmatrix}  = \begin{bmatrix}\cos(\theta) & \sin(\theta) & 0\\\\ -\sin(\theta) & \cos(\theta) & 0\\\\ 0 & 0 & 1\\ \end{bmatrix} \begin{bmatrix}   \dot{x_I}\\\\\dot{y_I}\\\\\dot{\theta_I}\\ \end{bmatrix} -
+ \begin{bmatrix} 0.32 \\\\ 0.32 \\\\ \frac{\pi}{2}\end{bmatrix}
 $$
+
+Likewise in the previous answer, the last term is the offset term that is used to account for the different origins between the robot frame and the world frame.
 
 3. Can you explain why there is a difference between actual and desired location?
 
@@ -95,7 +101,7 @@ There could be many factors that could cause an error between the true location 
 - Loose tolerances within the encoders.
 - Non consistent driving surface.
 - No feedback mechanism to check if the motors moved the desired amount.
-- Overshooting and undershooting of the desired target distance. 
+- Overshooting and undershooting of the desired target distance.
 
 4. Which topic(s) did you use to make the robot move? How did you figure out the topic that could make the motor move?
 
@@ -103,7 +109,7 @@ We used the `/hostname/wheels_driver_node/wheels_cmd` and published `WheelsCmdSt
 
 5. Which speed are you using? What happens if you increase/decrease the speed?
 
-We used a value of `0.5` for forward movement and `0.25` for rotational movement. If we increase the speed the robot will move faster but runs the risk of overshooting the desired distance. However, decreasing the speed could prevent the robot from moving as the static friction is greater the motor's torque for the given wheel. 
+We used a value of `0.6` for forward movement and `0.6` for rotational movement. If we increase the speed the robot will move faster but runs the risk of overshooting the desired distance. However, decreasing the speed could prevent the robot from moving as the static friction is greater the motor's torque.
 
 6. How did you keep track of the angle rotated?
 
@@ -121,15 +127,45 @@ We used the same topic to rotate the robot as to move the robot forward.
 
 Using the equation listed from the previous answer for question 6. We added all the changes of the robot's angle to the initial angle the robot started with throughout the whole execution of the robot's movement.
 
+While we can implement these equations into the motor control node that is used to estimate the robot's pose and correct for drift. We would much rather use the Duckietown's implementation for the Duckiebot as it is more likely to be correct and robust compared to our implementation. The reference is linked below.  
+
 # Part 2
 
 1. What is the final location of your robot as shown in your odometry reading?
 
-The final location of the robot is: 0.2, 0.4, 90 degress for x, y, and theta respectively
+The final location of the robot is: 0.39, 0.53, ~86.7 degress for x, y, and theta respectively
 
 1. Is it close to your robot’s actual physical location in the mat world frame?
 
 It's sometimes reasonably close. Within 30 centimeters.
+
+## LED light pattern
+
+For setting the light patterns for different stages of the task, we first run this command to launch the led_emitter_node:
+dts duckiebot demo --demo_name led_emitter_node --duckiebot_name $BOT --package_name led_emitter --image duckietown/dt-core:daffy-arm64v8
+
+we then use the service VEHICLE_NAME/led_emitter_node/set_custom_pattern and pass different patterns to different stages.
+And since we need to call it multiple times, we keep the connection persistent.
+For the color patterns, the stage one is red, stage two is blue, stage three is green and stage four is purple.
+
+
+## Video
+
+The video below shows the robot performing some basic pre-planned maneuvers in Duckietown:
+
+{{< youtube 8USVB2A9jE >}}
+
+The video below shows the robot's odometry over time while performing the same basic pre-planned maneuvers from the video above:
+
+{{< youtube fucIoBTw888 >}}
+
+## ROS Bag
+
+[Bag file](https://github.com/jihoonog/CMPUT-503-Exercise-2/raw/v2/bags/final.bag)
+
+
+## Odometry over time
+
 
 
 ## Correction
@@ -137,11 +173,11 @@ It's sometimes reasonably close. Within 30 centimeters.
 ![](/uploads/diagram-20230208.svg)
 
 $$
-\vec{R}\times\vec{T} = \sin(\theta) ||\vec{R} || \cdot || \vec{T}|| u
+\vec{R}\times\vec{T} = \sin(\theta) \cdot ||\vec{R} || \cdot || \vec{T}|| u
 $$
 
 $$
-\vec{R} \cdot \vec{T} = \cos(\theta) ||\vec{R} || \cdot || \vec{T}||
+\vec{R} \cdot \vec{T} = \cos(\theta) \cdot ||\vec{R} || \cdot || \vec{T}||
 $$
 
 ## PID Control
@@ -149,6 +185,10 @@ $$
 $$
 u(t) = K_pe(t) + K_i \int_0^te(\tau) d\tau + K_d\frac{de(t)}{dt}
 $$
+
 # References
 
+This is a list of references that I used to do this exercise.
 
+- PID: https://github.com/jellevos/simple-ros-pid/blob/master/simple_pid/PID.py
+- Deadreckoning: https://github.com/duckietown/dt-core/blob/daffy/packages/deadreckoning/src/deadreckoning_node.py
