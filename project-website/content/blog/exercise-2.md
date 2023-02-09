@@ -77,7 +77,7 @@ We can convert between the two frames using a forward and reverse kinematics equ
 To convert between the world frame to the robot frame we use this equation:
 
 $$
-\begin{bmatrix}\dot{x_I}\\\\\dot{y_I}\\\\\dot{\theta_I}\\ \end{bmatrix}  = \begin{bmatrix}\cos(\theta) & -\sin(\theta) & 0\\\sin(\theta) & \cos(\theta) & 0\\\\ 0 & 0 & 1\\ \end{bmatrix} \begin{bmatrix}   \dot{x_R}\\\\\dot{y_R}\\\\\dot{\theta_R}\\ \end{bmatrix} + \begin{bmatrix} 0.32 \\\\ 0.32 \\\\ \frac{/pi}{2}\end{bmatrix}
+\begin{bmatrix}\dot{x_I}\\\\\dot{y_I}\\\\\dot{\theta_I}\\ \end{bmatrix}  = \begin{bmatrix}\cos(\theta) & -\sin(\theta) & 0\\\sin(\theta) & \cos(\theta) & 0\\\\ 0 & 0 & 1\\ \end{bmatrix} \begin{bmatrix}   \dot{x_R}\\\\\dot{y_R}\\\\\dot{\theta_R}\\ \end{bmatrix} + \begin{bmatrix} 0.32 \\\\ 0.32 \\\\ \frac{\pi}{2}\end{bmatrix}
 $$
 
 The last term is the offset term that is used to account for the different origins between the robot frame and the world frame.
