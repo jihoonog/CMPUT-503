@@ -153,7 +153,7 @@ For the color patterns, the stage one is red, stage two is blue, stage three is 
 
 The video below shows the robot performing some basic pre-planned maneuvers in Duckietown:
 
-{{< youtube 8USVB2A9jE >}}
+{{< youtube -8USVB2A9jE >}}
 
 The video below shows the robot's odometry over time while performing the same basic pre-planned maneuvers from the video above:
 
