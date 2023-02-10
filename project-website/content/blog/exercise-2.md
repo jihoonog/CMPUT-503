@@ -127,9 +127,126 @@ We used the same topic to rotate the robot as to move the robot forward.
 
 Using the equation listed from the previous answer for question 6. We added all the changes of the robot's angle to the initial angle the robot started with throughout the whole execution of the robot's movement.
 
-While we can implement these equations into the motor control node that is used to estimate the robot's pose and correct for drift. We would much rather use the Duckietown's implementation for the Duckiebot as it is more likely to be correct and robust compared to our implementation. The reference is linked below.  
+While we can implement these equations into the motor control node that is used to estimate the robot's pose and correct for drift. We would much rather use the Duckietown's implementation for the Duckiebot as it is more likely to be correct and robust compared to our implementation. For example, in their implementation they use `AppromixateTime` to synchronize the timestamp between the two encoder messages so that the message from one encoder is close to the timestamp of the other. The code reference is linked below.
 
 # Part 2
+
+In this part we are tasked to create a multi-state program where our robot will move about in the lab's Duckietown environment following a pre-programed route and setting the LED light pattern to indicate the robot's current state.
+
+## Architecture
+
+Below is the ROS computation graph for implementing this exercise.
+It is comprised with two nodes:
+
+- The **state_control_node** is responsible for maintaining the current state of the robot as well as its state transitions and setting the LED patterns. It also give commands to the `motor_control_node` to move the robot to a specified location in world frame.
+- The **motor_control_node** is responsible for moving the robot to a specific location based on commands received from `state_control_node`. It handles all odometry calculations, dead reckoning, error corrections, and motor control for the robot. Once the current command is successfully completed an acknowledgement is sent back to the `state_control_node` indicating that the robot finished the current task.
+
+![](/uploads/CMPUT-503-ROS-Node-setup.svg)
+
+### The State Control Node
+
+The state control node as stated before is responsible for maintaining the current state, state transition, and setting of the LEDs for the robot.
+In our implementation states are executed in a sequential fashion.
+Once a command in published to the `motor_control_node` the `state_control_node` is blocked until it receives a confirmation that the command was successfully completed. This confirmation comes from the `motor_control_node`.
+Once the confirmation message is received it can then move onto publishing the next command to the `motor_control_node`.
+The commands themselves are fairly simple, due to the simple tasks that our robot needed to do.
+The commands are a formatted string that is published to the `motor_control_node` using a String type message.
+An example command could be `"forward:2.3"` meaning move forward 2.3 meters from the current world frame.
+Another could be `"right:80"` meaning rotate right (clockwise) 80 degrees.
+Parsing is done at the `motor_control_node`.
+
+#### LED light pattern
+
+For setting the light patterns for different stages of the task, we first run this command to launch the `led_emitter_node`:
+
+```bash
+dts duckiebot demo --demo_name led_emitter_node --duckiebot_name $BOT --package_name led_emitter --image duckietown/dt-core:daffy-arm64v8
+```
+
+We then use the service `<VEHICLE_NAME>/led_emitter_node/set_custom_pattern` to set the different LED patterns to their corresponding state. 
+Since we need to call this service multiple times, we keep the connection persistent.
+
+The colour pattern for each state is defined below:
+
+1. Red
+2. Blue
+3. Green
+4. Purple
+
+### The Motor Control Node
+
+The motor control node as stated before is responsible for all movement command executions, odometry calculations, dead reckoning, error corrections, and motor control for the robot.
+The `motor_control_node` is more of a listener to the `state_control_node`, it doesn't do anything until it receives a command from the controller that is the `state_control_node`. Once it receives a command it then executes that command to the best of it's ability.
+There are three functions that implement the movements required for the lab exercise.
+One moves the robot forward by a specified amount in meters one rotates the robot by a specified amount in degrees, and one moves the robot in an arcing motion that is kinda hacky.
+
+Commands received are appended to a list where it is used to update and correct the robot's pose.
+It also provides a useful debugging tool to see any errors in the robot's odometry.
+For forward movement there is a vector that connects the robot's pre-movement position to its target position.
+The robot then follows that vector to the target position.
+For rotational movement the robot will rotate in place until the robot's theta odometry is close to the target's direction. The rotation in-place is done by having one motor spin in one direction and the other motor spin in the other direction at the same speed so that there isn't any translational movement during rotation.
+For the arc movement one of the motor is spinning faster than the other so that it can create both a translational and rotational movement.
+
+#### Corrections
+
+Due to manufacturing defects, loose tolerances, the unpredictable nature of reality, and the fact that we can't assume a spherical duck.
+There will be some error or drift between the target pose and the actual pose.
+In this exercise we were not required to implement close-loop control but I found it easier to implement some kind of control loop feedback that made it easier to do all the required tasks without driving off Duckietown.
+There are many process variables (PV) that we could have use to have our robot drive in a straight line:
+
+- The difference in distances each wheel has traveled
+- The drift between the target track and the robot's position to that track
+
+But the one that works best for us, was the angle between the robot vector and the target vector.
+The diagram below a visual representation of the two vectors.
+
+![](/uploads/diagram-20230208.svg)
+
+-  {{< rawhtml >}} \(\vec{R}\) {{< /rawhtml >}} is the robot vector which describes where the robot is heading. This is derived from the robot's odometry.
+-  {{< rawhtml >}} \(\vec{T}\) {{< /rawhtml >}} is the target vector which describes the heading to the target position from the robot's position.
+
+Minimizing the angle between the robot vector and the target vector while driving forward should get our robot to the desired location.
+To get the angle between the robot vector and the target vector we can use the dot product divided by the product magnitude of the two vectors to get the cosine value where taking the inverse gives us the angle.
+
+$$
+\frac{\vec{R} \cdot \vec{T}}{||\vec{R} || \cdot || \vec{T}||} = \cos(\theta) \rightarrow \arccos(\cos(\theta)) = \theta
+$$
+
+However, this does not gives us the direction on where the target vector lies in relation to the robot vector.
+For that we need the cross product of the two vectors to find the sin value that will gives the direction.
+If the value is less than 0 then the target is right of the robot, if greater than 0 then the target is left of the robot.
+
+$$
+\frac{\vec{R}\times\vec{T}}{||\vec{R} || \cdot || \vec{T}|| \cdot u} = \sin(\theta)
+$$
+
+Now that we have the magnitude and direction of the error we can add this into our close-loop feedback system which in this case is PID control.
+
+#### PID Control
+
+A PID (proportional-integral-derivative) controller is a commonly used feedback control-loop mechanism that gives corrections to a process or a plant such that its output or process value matches the desired set-point.
+It uses three tunable parameters that takes into account the present error, past errors, and an estimate of future errors to provide a correction value such that it minimizes over-corrective oscillation and unnecessary delay.
+The equation below is the overall control function:
+
+$$
+u(t) = K_pe(t) + K_i \int_0^te(\tau) d\tau + K_d\frac{de(t)}{dt}
+$$
+
+Where:
+
+- {{< rawhtml >}} \(K_p\) {{< /rawhtml >}} is the propotional gain, a tuning parameter,
+- {{< rawhtml >}} \(K_i\) {{< /rawhtml >}} is the integral gain, a tuning parameter,
+- {{< rawhtml >}} \(K_d\) {{< /rawhtml >}} is the derivative gain, a tuning parameter,
+- {{< rawhtml >}} \(e(t)\) {{< /rawhtml >}} is the error between the set-point or target point and process variable at time {{< rawhtml >}} \(t\) {{< /rawhtml >}},
+- {{< rawhtml >}} \(t\) {{< /rawhtml >}} is the time,
+- {{< rawhtml >}} \(\tau\) {{< /rawhtml >}} is the variable of integration (takes on values from time 0 to the present {{< rawhtml >}} \(t\) {{< /rawhtml >}}).
+
+Now tuning these parameters could be a course all in itself and I had a limited amount of time so I guessed and checked by tuning each parameter separately and settled on the parameters listed below:
+
+- {{< rawhtml >}} \(K_p = 0.4\) {{< /rawhtml >}}
+- {{< rawhtml >}} \(K_i = 0.075\) {{< /rawhtml >}}
+- {{< rawhtml >}} \(K_d = 0.0\) {{< /rawhtml >}}
+
 
 1. What is the final location of your robot as shown in your odometry reading?
 
@@ -137,16 +254,7 @@ The final location of the robot is: 0.39, 0.53, ~86.7 degress for x, y, and thet
 
 1. Is it close to your robot’s actual physical location in the mat world frame?
 
-It's sometimes reasonably close. Within 30 centimeters.
-
-## LED light pattern
-
-For setting the light patterns for different stages of the task, we first run this command to launch the led_emitter_node:
-dts duckiebot demo --demo_name led_emitter_node --duckiebot_name $BOT --package_name led_emitter --image duckietown/dt-core:daffy-arm64v8
-
-we then use the service VEHICLE_NAME/led_emitter_node/set_custom_pattern and pass different patterns to different stages.
-And since we need to call it multiple times, we keep the connection persistent.
-For the color patterns, the stage one is red, stage two is blue, stage three is green and stage four is purple.
+Using Euclidean distance the difference was 22.14 centimeters.
 
 
 ## Video
@@ -163,32 +271,10 @@ The video below shows the robot's odometry over time while performing the same b
 
 [Bag file](https://github.com/jihoonog/CMPUT-503-Exercise-2/raw/v2/bags/final.bag)
 
-
-## Odometry over time
-
-
-
-## Correction
-
-![](/uploads/diagram-20230208.svg)
-
-$$
-\vec{R}\times\vec{T} = \sin(\theta) \cdot ||\vec{R} || \cdot || \vec{T}|| u
-$$
-
-$$
-\vec{R} \cdot \vec{T} = \cos(\theta) \cdot ||\vec{R} || \cdot || \vec{T}||
-$$
-
-## PID Control
-
-$$
-u(t) = K_pe(t) + K_i \int_0^te(\tau) d\tau + K_d\frac{de(t)}{dt}
-$$
-
 # References
 
 This is a list of references that I used to do this exercise.
 
 - PID: https://github.com/jellevos/simple-ros-pid/blob/master/simple_pid/PID.py
+- PID Controller: https://en.wikipedia.org/wiki/PID_controller
 - Deadreckoning: https://github.com/duckietown/dt-core/blob/daffy/packages/deadreckoning/src/deadreckoning_node.py
