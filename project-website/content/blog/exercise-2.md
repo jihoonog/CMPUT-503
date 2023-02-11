@@ -127,7 +127,7 @@ We used the same topic to rotate the robot as to move the robot forward.
 
 Using the equation listed from the previous answer for question 6. We added all the changes of the robot's angle to the initial angle the robot started with throughout the whole execution of the robot's movement.
 
-While we can implement these equations into the motor control node that is used to estimate the robot's pose and correct for drift. We would much rather use the Duckietown's implementation for the Duckiebot as it is more likely to be correct and robust compared to our implementation. For example, in their implementation they use `AppromixateTime` to synchronize the timestamp between the two encoder messages so that the message from one encoder is close to the timestamp of the other. The code reference is linked below.
+While we can implement these equations into the motor control node that is used to estimate the robot's pose and correct for drift. We would much rather use the Duckietown's implementation [1] for the Duckiebot as it is more likely to be correct and robust compared to our implementation. For example, in their implementation they use `AppromixateTime` to synchronize the timestamp between the two encoder messages so that the message from one encoder is close to the timestamp of the other. The code reference is linked below.
 
 # Part 2
 
@@ -224,7 +224,7 @@ Now that we have the magnitude and direction of the error we can add this into o
 
 #### PID Control
 
-A PID (proportional-integral-derivative) controller is a commonly used feedback control-loop mechanism that gives corrections to a process or a plant such that its output or process value matches the desired set-point.
+A PID (proportional-integral-derivative) controller is a commonly used feedback control-loop mechanism that gives corrections to a process or a plant such that its output or process value matches the desired set-point [2].
 It uses three tunable parameters that takes into account the present error, past errors, and an estimate of future errors to provide a correction value such that it minimizes over-corrective oscillation and unnecessary delay.
 The equation below is the overall control function:
 
@@ -247,6 +247,7 @@ Now tuning these parameters could be a course all in itself and I had a limited 
 - {{< rawhtml >}} \(K_i = 0.075\) {{< /rawhtml >}}
 - {{< rawhtml >}} \(K_d = 0.0\) {{< /rawhtml >}}
 
+We used someone elses PID controller [3] for implementing PID control.
 
 1. What is the final location of your robot as shown in your odometry reading?
 
@@ -275,6 +276,6 @@ The video below shows the robot's odometry over time while performing the same b
 
 This is a list of references that I used to do this exercise.
 
-- PID: https://github.com/jellevos/simple-ros-pid/blob/master/simple_pid/PID.py
-- PID Controller: https://en.wikipedia.org/wiki/PID_controller
-- Deadreckoning: https://github.com/duckietown/dt-core/blob/daffy/packages/deadreckoning/src/deadreckoning_node.py
+1. Deadreckoning: https://github.com/duckietown/dt-core/blob/daffy/packages/deadreckoning/src/deadreckoning_node.py
+2. PID Controller: https://en.wikipedia.org/wiki/PID_controller
+3. PID controller code: https://github.com/jellevos/simple-ros-pid/blob/master/simple_pid/PID.py
