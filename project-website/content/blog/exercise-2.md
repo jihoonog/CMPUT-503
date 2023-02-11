@@ -19,9 +19,9 @@ This is the second lab assignment of the course.
 For this exercise were tasked to implement a basic ROS subscriber and publisher that we could use later in the exercise.
 The ROS framework uses a publish-subscribe architecture to send and receive data (or more specifically messages) to and from different nodes. These messages are transported using `topics`, these topics are named channels or buffers that publishers can publish messages to while subscribers can subscribe to these topics to listen to the messages. Messages are strongly typed, meaning their schema must be defined during compile time otherwise things will not work. Moreover, topics can only support a single message type, publishing multiple different data types will have all but the last topic type be overwritten by the publisher. However, you can define your own and ROS has a collection of different data types that the end user could use.
 
-While the Duckiebot software stack is based on ROS the robot developers made a custom template repository that one could fork to implement their own ROS package(s) that can be deployed to the Duckiebots. This template repository contains a Dockerfile that is used to download the images, build the container, and run the softwares that is specific to the Duckiebots and the end-user uses it to bootstrap their project.
+While the Duckiebot software stack is based on ROS the robot developers made a custom template repository that one could fork to implement their own ROS package(s) that can be deployed to the Duckiebots. This template repository contains a Dockerfile that is used to download the images, build the container, and run the software programs that is specific to the Duckiebot and the end-user uses it to bootstrap their project.
 
-For making our first custom publisher and subscriber we were tasked to grab the video image from the built-in camera and publish it to a custom topic. Following the Duckietown developer guide I created a new python file that will act as my subscriber to the camera's image topic and publisher to my custom topic. I also added my new file into the launch file so that ROS will know to deploy that file as a new node. Finally I added the launch file into the the launch script that will be used to call `roslaunch` on the launch file to start my node when the container is running on the robot.
+For making our first custom publisher and subscriber we were tasked to grab the video image from the built-in camera and publish it to a custom topic. Following the Duckietown developer guide I created a new python file that will act as my subscriber to the camera's image topic and publisher to my custom topic. I also added my new file into the launch file so that ROS will know to deploy that file as a new node. Finally, I added the launch file into the launch script that will be used to call `roslaunch` on the launch file to start my node when the container is running on the robot.
 
 ### Image Subscriber
 
@@ -36,8 +36,8 @@ Now I just needed to publish this to my own custom topic
 
 ### Image Publisher
 
-Republishing the image data was pretty straightforward. First I needed to create a new `CompressedImage` variable and do a deep copy of the received data as it is consumed by the subscriber. This new `CompressedImage` variable also has it header set so it knows when it was created, and published it to a custom topic.
-The publisher was created using `rospy.Publisher` to a custom topic that I called `/csc22935/raw_image/compressed` and it uses the same datatype as the subscriber.
+Republishing the image data was pretty straightforward. First I needed to create a new `CompressedImage` variable and do a deep copy of the received data as it is consumed by the subscriber. This new `CompressedImage` variable also has it header set, so it knows when it was created, and published it to a custom topic.
+The publisher was created using `rospy.Publisher` to a custom topic that I called `/csc22935/raw_image/compressed`, and it uses the same datatype as the subscriber.
 
 ### Screenshot of the source code of the image subscriber and publisher
 
@@ -99,7 +99,7 @@ There could be many factors that could cause an error between the true location 
 
 - Wheel slip.
 - Loose tolerances within the encoders.
-- Non consistent driving surface.
+- Non-consistent driving surface.
 - No feedback mechanism to check if the motors moved the desired amount.
 - Overshooting and undershooting of the desired target distance.
 
@@ -141,7 +141,7 @@ It is comprised with two nodes:
 - The **state_control_node** is responsible for maintaining the current state of the robot as well as its state transitions and setting the LED patterns. It also give commands to the `motor_control_node` to move the robot to a specified location in world frame.
 - The **motor_control_node** is responsible for moving the robot to a specific location based on commands received from `state_control_node`. It handles all odometry calculations, dead reckoning, error corrections, and motor control for the robot. Once the current command is successfully completed an acknowledgement is sent back to the `state_control_node` indicating that the robot finished the current task.
 
-![](/uploads/CMPUT-503-ROS-Node-setup.svg)
+![ROS node setup](/uploads/CMPUT-503-ROS-Node-setup.svg)
 
 ### The State Control Node
 
@@ -163,7 +163,7 @@ For setting the light patterns for different stages of the task, we first run th
 dts duckiebot demo --demo_name led_emitter_node --duckiebot_name $BOT --package_name led_emitter --image duckietown/dt-core:daffy-arm64v8
 ```
 
-We then use the service `<VEHICLE_NAME>/led_emitter_node/set_custom_pattern` to set the different LED patterns to their corresponding state. 
+We then use the service `<VEHICLE_NAME>/led_emitter_node/set_custom_pattern` to set the different LED patterns to their corresponding state.
 Since we need to call this service multiple times, we keep the connection persistent.
 
 The colour pattern for each state is defined below:
@@ -198,9 +198,9 @@ There are many process variables (PV) that we could have use to have our robot d
 - The drift between the target track and the robot's position to that track
 
 But the one that works best for us, was the angle between the robot vector and the target vector.
-The diagram below a visual representation of the two vectors.
+The diagram below shows a visual representation of the two vectors.
 
-![](/uploads/diagram-20230208.svg)
+![robot vector diagram](/uploads/diagram-20230208.svg)
 
 -  {{< rawhtml >}} \(\vec{R}\) {{< /rawhtml >}} is the robot vector which describes where the robot is heading. This is derived from the robot's odometry.
 -  {{< rawhtml >}} \(\vec{T}\) {{< /rawhtml >}} is the target vector which describes the heading to the target position from the robot's position.
@@ -234,7 +234,7 @@ $$
 
 Where:
 
-- {{< rawhtml >}} \(K_p\) {{< /rawhtml >}} is the propotional gain, a tuning parameter,
+- {{< rawhtml >}} \(K_p\) {{< /rawhtml >}} is the proportional gain, a tuning parameter,
 - {{< rawhtml >}} \(K_i\) {{< /rawhtml >}} is the integral gain, a tuning parameter,
 - {{< rawhtml >}} \(K_d\) {{< /rawhtml >}} is the derivative gain, a tuning parameter,
 - {{< rawhtml >}} \(e(t)\) {{< /rawhtml >}} is the error between the set-point or target point and process variable at time {{< rawhtml >}} \(t\) {{< /rawhtml >}},
@@ -251,12 +251,11 @@ We used someone elses PID controller [3] for implementing PID control.
 
 1. What is the final location of your robot as shown in your odometry reading?
 
-The final location of the robot is: 0.39, 0.53, ~86.7 degress for x, y, and theta respectively
+The final location of the robot is: 0.39, 0.53, ~86.7 degrees for x, y, and theta respectively
 
 1. Is it close to your robot’s actual physical location in the mat world frame?
 
 Using Euclidean distance the difference was 22.14 centimeters.
-
 
 ## Video
 
