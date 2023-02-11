@@ -272,6 +272,10 @@ The video below shows the robot's odometry over time while performing the same b
 
 [Bag file](https://github.com/jihoonog/CMPUT-503-Exercise-2/raw/v2/bags/final.bag)
 
+# Repo Link
+
+[Exercise 2 repository link](https://github.com/jihoonog/CMPUT-503-Exercise-2/tree/561e08a558a95b95e2c01dd21c2394f2f9b4fb34)
+
 # References
 
 This is a list of references that I used to do this exercise.
