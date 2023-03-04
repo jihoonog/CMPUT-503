@@ -54,16 +54,20 @@ The video below shows the robot performing some basic lane following driving on 
 
 1. What is the error for your PID controller?
 
-We used two errors, one is the lateral error, and the other is the angular error from the centerline.
+We used two errors, one is the lateral error, and the other is the angular error from the centerline. While we could just use the lateral error for correction, we've decided to use bot the lateral and angular error as they are provided by the lane filter node. Moreover, having the additional angular error will help with the lane following as the Duckiebot could be in the center of a lane but at an off angle where moving forward will cause it to drift out of the lane.
 
 2. If your proportional controller did not work well alone, what could have caused this?
 
-
+Using proportional control led to decent on-center performance on a straight lane tile, however it led to poor on-center performance during a turn. This is
+because the proportional term only handles errors happening at present time. On a straight lane if the robot was already aligned with the center of the lane very little correction is needed so long as the trim is set correctly. However, during a turn the center of the lane is constantly moving thus requiring the Duckiebot to make constant corrections. If the proportional term is too small then it can't make a large enough correction to stay within the lane. However, if the term is too large then it will over-correct and create oscillation during the straights. Moreover, a happy medium doesn't really exist that works well for both turns and straights. Therefore, we needed to give more feedback.
 
 3. Does the D term help your controller logic? Why or why not?
 
+Adding a D term helped a lot with the overshoot 
 
 4. (Optional) Why or why not was the I term useful for your robot?
+
+The I term helped a lot in reducing the state-state error 
 
 The I term was useful around the corners as there was a constant change in directions that the robot needed to correct for. 
 
