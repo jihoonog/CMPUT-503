@@ -3,7 +3,7 @@ author: "Jihoon Og"
 title: "Exercise 2"
 date: 2023-02-08
 description: "Second Lab Assignment"
-tags: ["bulding","programming", "ROS", "docker","odometry"]
+tags: ["building","programming", "ROS", "docker","odometry"]
 categories: ["robot"]
 ShowRelated: false
 showToc: true
