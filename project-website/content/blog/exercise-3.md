@@ -61,15 +61,13 @@ We used two errors, one is the lateral error, and the other is the angular error
 Using proportional control led to decent on-center performance on a straight lane tile, however it led to poor on-center performance during a turn. This is
 because the proportional term only handles errors happening at present time. On a straight lane if the robot was already aligned with the center of the lane very little correction is needed so long as the trim is set correctly. However, during a turn the center of the lane is constantly moving thus requiring the Duckiebot to make constant corrections. If the proportional term is too small then it can't make a large enough correction to stay within the lane. However, if the term is too large then it will over-correct and create oscillation during the straights. Moreover, a happy medium doesn't really exist that works well for both turns and straights. Therefore, we needed to give more feedback.
 
-3. Does the D term help your controller logic? Why or why not?
+3. Does the `D` term help your controller logic? Why or why not?
 
-Adding a D term helped a lot with the overshoot 
+Adding a `D` term helped a lot with the overshoot from having too high of a `P` term. Because the `D` term tries to look at future trends in error it provides a dampening component if the `P` and `I` components leads to an overshoot.
 
-4. (Optional) Why or why not was the I term useful for your robot?
+4. (Optional) Why or why not was the `I` term useful for your robot?
 
-The I term helped a lot in reducing the state-state error 
-
-The I term was useful around the corners as there was a constant change in directions that the robot needed to correct for. 
+The `I` term was useful at the turning tiles as there was a constant change in direction as well as the location of the center line with respect to the Duckiebot's lateral axis. As the error grows over time the `I` component will add more and more corrective effort in order to bring the Duckiebot back to the center of the lane.
 
 # Part 3
 
