@@ -12,43 +12,70 @@ ShowBreadCrumbs: false
 ---
 This is the third lab assignment of the course.
 
-# Part 1
+# Team Members
+
+* Jihoon Og
+* Qianxi Li
+
+# Part 1 - Computer Vision
+
+Part 1 was primarily done by my lab partner Qianxi Li, the report is mostly from his website [here](https://sites.google.com/ualberta.ca/qianxi-duckie/exercises/exercise-3)
+
+For this exercise, we were required to interact with the transformation between different frames in the Duckietown environment. We first needed to recognize the different AprilTags using the built-in computer vision library. For section 1 of exercise 3, we basically needed to undo the distortion caused by the camera, then use the AprilTags detector library to get the tag's id, location, rotation pose, and corner locations within the camera frame. We then needed to label the edge of the tag and give a type to it. Depending on the type of the AprilTag, we needed to change the color of the LED emitter based on the table below:
+
+- Red: Stop Sign
+- Blue: T-Intersection
+- Green: U of A Tag
+- White: No Detections
+
+In certain situations the camera may capture multiple tags within it's field of view. However, we only want to detect the closest one. So we only keep the one with the smallest z-value (closest to our camera) and the clamp the maximum z-value to be accepted to 0.5 meters. In addition, the margin of our detection should be larger than 10 to get classified as an AprilTag with a strong confidence.
+
+Because the lens of the camera distort our image, the lines within the image are not straight. Therefore, when people deal with 3-D tasks from photo image input, an undistortion stage is required.
 
 ## Questions
 
 1. What does the april tag library return to you for determining its position?
 
-For each tag it detects, it returns the x, y coordinates for the tag's center and its corners. It uses the image coordinate system meaning the origin starts in the top left corner and increases as you go right and down. It can also estimate the pose of the tag with respect to the camera in (x,y,z)
+For each tag it detects, it returns the x, y coordinates for the tag's center and its corners. It uses the image coordinate system meaning the origin starts in the top left corner and increases as you go right and down. It can also estimate the pose of the tag with respect to the camera in (x,y,z).
 
 2. Which directions do the X, Y, Z values of your detection increase / decrease?
 
 The z-axis points from the camera's center out from the camera's lens.
 The x-axis is to the right in the image taken by the camera.
 The y-axis goes down from the top frame of the camera.
+So moving away from the camera will increase the z value, moving to the right of the camera will increase the x value, and moving downward of the camera will crease the y value.
 
 3. What frame orientation does the april tag use?
 
-The tag's coordinate frame is centered at the center of the tag, with the x-axis pointing to the right, y-axis pointing down, and the z-axis pointing into the tag.
+The tag's coordinate frame is centered at the center of the tag, with the x-axis to the right, y-axis pointing down, and the z-axis pointing into the tag.
 
 https://github.com/AprilRobotics/apriltag/wiki/AprilTag-User-Guide
 
 4. Why are detections from far away prone to error?
 
-Tags that are further away will make it harder for the camera to distinguish the smaller "pixels" that identifies the april tags. Moreover, the focal length is set for a particular distance from the camera and objects that are farther away from the focal length will be out-of-focus thus making it harder for the detection algorithm to find and identify the tag.
+Tags that are further away will make it harder for the camera to distinguish the smaller "pixels" that identifies the AprilTags. Moreover, the focal length is set for a particular distance from the camera and objects that are farther away from the focal length will be out-of-focus thus making it harder for the detection algorithm to find and identify the tag.
 
 5. Why may you want to limit the rate of detections?
 
-Detecting the april tags too frequently will add unnecessary overhead to the system adding additional latency that could negatively affect other systems that are critical.
+Detecting the AprilTags too frequently will add unnecessary overhead to the system adding additional latency that could negatively affect other systems that are critical.
 
-# Part 2
+## Video
+
+The video below shows how the Duckiebot detects and labels the AprilTag using a bounding box and a text label. A tag with a type of intersection is detected by the camera.
+
+{{< rawhtml >}}<iframe src="https://drive.google.com/file/d/1DAXbdUZXFY1npf_VjEOVV97hlnL_UAvL/preview" width="640" height="480" allow="autoplay"></iframe>{{< /rawhtml >}}
+
+# Part 2 - Lane Following
+
+This part was primarily done by me.
 
 ## Implementation
 
-In order to ease development of the lane following functionality I've decided to reuse the lane following pipeline from the `dt-core` module. Below is a diagram from the Duckietown documentation showing an overview of the lane following pipeline.
+In order to ease development of the lane following functionality we've decided to reuse the lane following pipeline from the `dt-core` module. Below is a diagram from the Duckietown documentation showing an overview of the lane following pipeline.
 
 ![lane following pipeline](/uploads/data-from-img-image_pipeline_overview-77bbe28a.png)
 
-For this lab exercise I've implemented my own lane controller node that take in `lane pose` generated by the lane filter node from the Duckiebot's built-in lane following pipeline. The main difference between their implementation and mine is that I use all three PID parameters (Proportional, Integral, and Derivative) for both the lateral and angular error while they use only proportional and integral terms for the lateral and angular error. The main rational is to further improve performance by using a `D` term to decrease overshoot as well settling time.
+For this lab exercise we've implemented our own lane controller node that take in `lane pose` generated by the lane filter node from the Duckiebot's built-in lane following pipeline. The main difference between their implementation and mine is that We use all three PID parameters (Proportional, Integral, and Derivative) for both the lateral and angular error while they use only proportional and integral terms for the lateral and angular error. The main rational is to further improve performance by using a `D` term to decrease overshoot as well settling time.
 
 ## Questions
 
@@ -79,24 +106,118 @@ The video below shows the robot performing some basic lane following driving on 
 
 {{< youtube MQJUCQqfxbg >}}
 
-# Part 3
+# Part 3 - Localization Using Sensor Fusion
 
-## Questions
+Part 3 was primarily done by my lab partner Qianxi Li, the report is mostly from his website [here](https://sites.google.com/ualberta.ca/qianxi-duckie/exercises/exercise-3
 
-### 3.2
+The top-level goal for this part is to utilize:
+
+1. The known locations of all AprilTags in the world frame (from part 1)
+2. Use the node we wrote in part 1 to detect the presence of April tags in the image to get a better lane following in a world shown below.
+
+![figure](https://lh4.googleusercontent.com/36C5gYovAqNRHZWxK6JLJIC2jyGWC86t_VuJaVaIFslpzLUIPpIhG-tx5SFRfCselZzEKxFOmeNwePCcYBqFtkfXUS7tY-4FD1ztzWoU6m2IS8oBO1S-q7K1xCUe_F243w=w1280)
+
+As we are using the lane following system from part 2, if we detect an AprilTag the camera, we then can figure out where the robot is in the world frame and update its pose to the true location, otherwise, we continue to use odometry which may be inaccurate.
+
+The image above is the Duckietown environment our Duckiebots are interacting with, in the next several sections, our Duckiebots will travel along the blue lane, and we will examine the odometry and how the frames of robot interact with each other.
+
+### Section 3.1-3.2
+
+In these two sections, the two primary things we needed to get familiar with were: 
+
+1. Using Rviz to visualize different frames and transformations in different forms
+2. Given some fixed landmarks in the world, compare the path the robot traveled measured in world frame with the measurements produced by odometry.
+
+We need to use the method `static_transform_publisher` of TF2 to broadcast the locations and orientations of 10 different Apriltags in the world frame. Rviz can then be used to visualize all of their locations in the world frame.
+
+#### Questions
+
 
 1. Where did your odometry seem to drift the most? Why would that be?
 
-It drifted to the right more frequently. One reason could be that it's hard to make a perfect 90-degree turn by only looking at the camera image, usually when it makes the turn, you feel that it’s a little too over so you adjust the yaw to the opposite angle a little, which confuse the odometry. The lane we are following has 4 right turns so it’s easy to get errors at each turn and drift to the right.
+It drifted to the right more frequently. One reason could be that it's hard to make a perfect 90-degree turn by only looking at the camera image, usually when it makes the turn, you feel that it’s a little too over, so you adjust the yaw to the opposite angle a little, which confuse the odometry. The lane we are following has 4 right turns, so it’s easy to get errors at each turn and drift to the right.
 
 2. Did adding the landmarks make it easier to understand where and when the odometry drifted?
 
 Yes, adding the landmarks is very easy to see the current location of our Duckiebot and get to know where and when it is drifted.
 
-### 3.6
+### Section 3.3
+
+In this section, we need to obtain a transform tree graph, which is a tree structure with nodes being different frames and edges being transformations.
+
+To generate the graph, we did the following procedure:
+
+1. Go to dashboard
+2. Open portainer
+3. Open a console of the ROS container
+4. Install ros-noetic-tf2-tools
+5. Run `rosrun tf2_tools view_frames.py` to get the PDF file 
+6. Copy it to /data and download it.
+
+The transform tree graph looks like this, you can see the root is `vehicle_name/footprint`
+
+![transform graph tree](https://lh3.googleusercontent.com/sRYc-i1qH_UMjq93NMKehpr7h8TmQzpyaqk3HkwYgjEXjktIvtU_Q0QFzqcTG2nF_1xgQ_FaTNFw5g2Zu9SDhHTp5A5e4AW2qBTUsXfK8XlgdZ9cBfexfiBInFLO8pbm3w=w1280)
+
+### Section 3.4
+
+For this section, we can visualize all the frames in the Duckiebot using RViz, and figure out which joint is responsible for rotating the wheels.
+
+#### Question
+
+1. What's the type of joint that moves when we move the wheels?
+
+The joint is continuous. Since we need to **rotate** the wheel to move it and a continuous joint can rotate around the axis and has no upper and lower limits.
+
+### Section 3.5
+
+In this section, we want to see both the frames on a Duckiebot, and it should also change the location and orientation in the world frame if we move it. To do this, we let the parent frame be the odometry frame and the child frame be the `/footprint frame`, since the odometry frame is the child to the world frame, the root is now the world frame. The image below shows the current transform graph:
+
+![transform graph tree 2](https://lh3.googleusercontent.com/brH7s-9P2wNgjta15R-pXLdNRBceB501rVq83dPG3pPgq-XbUK00XqlfmIkBL07fUWNA5IoOz-6ULr6rONPHjR6pNiAzYcXBZA_kYvYoRxH3iWQi8q1UxnWCQdTKu9pYhg=w1280)
+
+The reason why no frame is moving is that we are now using the baselink frame (`/footprint`) of the Duckiebot, whenever you move the robot, the frame will also be there and the relative location of different frames on a Duckiebot will be the same.
+
+#### Questions
+
+1. What should the translation and rotation be from the odometry child to robot parent frame? In what situation would you have to use something different?
+
+The translation and rotation should all be zero. We should consider changing the values when the robot root frame is not the same as the odometry frame.
+
+2. After creating this link generate a new transform tree graph. What is the new root/parent frame for your environment?
+
+The new root is `/world`, the world frame.
+
+3. Can a frame have two parents? What is your reasoning for this?
+
+No, a frame cannot have two parents. The transform tree graph means, for every two nodes in the same tree, it is possible to have a transformation between them, but if you have two parents of the same frame, you cannot have a transformation that transforms one to another. And TF expects a tree structure and cannot deal with the case that has multiple parents.
+
+4. Can an environment have more than one parent/root frame?
+
+Yes, an environment can have more than one parent frame, just like before 3.5, we have a parent world frame with child AprilTag static frames and the odometry frame. And another parent footprint frame with a couple of other frames on the robot. And you cannot have one frame in a tree that transforms into another frame in another tree.
+
+### Section 3.6
+
+The video below shows how the robot moves in the world frame, where are the estimated location of the AprilTags, and the ground truth locations visualized by RViz. The delay is high since at the time we record this video, there were many people working in the lab causing high network contention. The estimated location of the AprilTags is obtained in the following way:
+
+1. We have the rotation and location information in the camera frame from the raw image
+2. Then we transformed that from the camera frame to the estimated location relative to the camera frame. You can also see all the frames on the robot are also moving as the robot moves, that's because in section 3.5 we attached the odometry frame with the robot root frame.
+
+{{< rawhtml >}}
+<iframe src="https://drive.google.com/file/d/1qPbVoIe3fzPE6ydsNJZNGGuvadNQeenC/preview" width="640" height="480" allow="autoplay"></iframe>
+{{< /rawhtml >}}
+
+#### Questions
 
 1. How far off are your detections from the static ground truth?
+
+If an AprilTag is detected in the image, the estimated AprilTag's frame will show up in RViz immediately. One issue with our design is that after one detection disappeared from the image, the last broadcasted frame will still be there and it will also rotate and move relative to the camera until we have a new April tag detected.
+
+The error between the ground truth and the estimation is within 20 centimeters, if there's a tag detected in the current image.
+
 2. What are two factors that could cause this error?
+
+- The resolution of the image can be low, since we can control the resolution of the image we pass to the detector, the higher it is, the more computation we will do, the more accurate location of the tag we can obtain (corner, edge...)
+
+- The light and the angle at that the camera observes the tag also matter. The dimmer the room is, the smaller the angle is, the harder for the camera to estimate its location and other information.
 
 ### 3.7
 
@@ -116,3 +237,11 @@ This is a list of references that I used to do this exercise.
 2. Lane Controller: https://github.com/duckietown/dt-core/blob/6d8e99a5849737f86cab72b04fd2b449528226be/packages/lane_control/include/lane_controller/controller.py
 3. PID Controller: https://en.wikipedia.org/wiki/PID_controller
 4. PID controller code: https://github.com/jellevos/simple-ros-pid/blob/master/simple_pid/PID.py
+5. Qianxi Li's website: https://sites.google.com/ualberta.ca/qianxi-duckie/exercises/exercise-3
+6. URDF Joints: http://wiki.ros.org/urdf/XML/joint
+7. URDF parameters for the Duckiebot: https://github.com/duckietown/dt-duckiebot-interface/blob/56a299aa5739e7f03a6b96d3b8dac3a8beca532c/packages/duckiebot_interface/urdf/duckiebot.urdf.xacro
+8. TF2: http://wiki.ros.org/tf2/Tutorials/Introduction%20to%20tf2
+9. TF2 Static Broadcaster: http://wiki.ros.org/tf2/Tutorials/Writing%20a%20tf2%20static%20broadcaster%20%28Python%29
+10. TF transformations: http://wiki.ros.org/tf/Overview/Transformations
+11. Sensor Fusion: https://docs.duckietown.org/daffy/duckietown-classical-robotics/out/exercise_sensor_fusion.html#fig:rviz-final-tf-tree
+12. AprilTag with Python: https://pyimagesearch.com/2020/11/02/apriltag-with-python/
