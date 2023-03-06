@@ -156,7 +156,7 @@ To generate the graph, we did the following procedure:
 
 The transform tree graph looks like this, you can see the root is `vehicle_name/footprint`
 
-![transform graph tree](https://lh3.googleusercontent.com/sRYc-i1qH_UMjq93NMKehpr7h8TmQzpyaqk3HkwYgjEXjktIvtU_Q0QFzqcTG2nF_1xgQ_FaTNFw5g2Zu9SDhHTp5A5e4AW2qBTUsXfK8XlgdZ9cBfexfiBInFLO8pbm3w=w1280)
+![transform graph tree](/uploads/transform_graph_1.png)
 
 ### Section 3.4
 
@@ -172,7 +172,8 @@ The joint is continuous. Since we need to **rotate** the wheel to move it and a 
 
 In this section, we want to see both the frames on a Duckiebot, and it should also change the location and orientation in the world frame if we move it. To do this, we let the parent frame be the odometry frame and the child frame be the `/footprint frame`, since the odometry frame is the child to the world frame, the root is now the world frame. The image below shows the current transform graph:
 
-![transform graph tree 2](https://lh3.googleusercontent.com/brH7s-9P2wNgjta15R-pXLdNRBceB501rVq83dPG3pPgq-XbUK00XqlfmIkBL07fUWNA5IoOz-6ULr6rONPHjR6pNiAzYcXBZA_kYvYoRxH3iWQi8q1UxnWCQdTKu9pYhg=w1280)
+![transform graph tree 2](/uploads/transform_graph_2.png)
+
 
 The reason why no frame is moving is that we are now using the baselink frame (`/footprint`) of the Duckiebot, whenever you move the robot, the frame will also be there and the relative location of different frames on a Duckiebot will be the same.
 
@@ -219,15 +220,48 @@ The error between the ground truth and the estimation is within 20 centimeters, 
 
 - The light and the angle at that the camera observes the tag also matter. The dimmer the room is, the smaller the angle is, the harder for the camera to estimate its location and other information.
 
-### 3.7
+### Section 3.7
+
+This section combines the previous sections were we use camera input as the sensor fusion to help localize our robot in the Duckietown.
+
+The robot travels along the lane shown in the image below, when it detects an Apriltag, it will estimate its location based on the tag's information. When no Apriltag is available, it will just use odometry.
+
+![duckietown environment](/uploads/duckietown_env.png)
+
+From the video below, you can see in the RViz window, all the April tag frames and all the frames on the Duckiebot are visualized, along with the greyscaled, undistorted camera input that shows where the robot it and what it sees
+
+{{< rawhtml >}}
+<iframe src="https://drive.google.com/file/d/1ODkNdsQbXfnpIHm4olukFoFHA5_r3sLg/preview" width="640" height="480" allow="autoplay"></iframe>
+{{< /rawhtml >}}
+
+The network was slow at the time we record the video so sometimes the delay can be high. We were using keyboard control to make it move. As you can see in the video, each time when it detects a tag, it will transport it to a more accurate location in the world, the robot is located at the place where a lot of different frames overlapping together since we are also displaying other frames on the robot. Due to the wifi's problem, it sometimes takes a while for the robot to transport it to the right location and publish the current camera image.
+
+With the help of the sensor fusion, now the robot travels pretty well, there's only a minor difference between the end location and the start location, and that is also because the wifi is slow so we need to decrease the frequency of the detection and use more odometry.
+
+#### Questions
 
 1. Is this a perfect system?
+
+Of course not. Although we are using geometry to calculate where the robot actually is in the world frame based on sensor fusion, the detection is not in real-time so there might be a delay for updating location, and the geometry can also bring larger error if the robot is observing the tag in a large angle (look from the side).
+
 2. What are the causes for some of the errors?
-3. What other appraoches could you use to improve localization?
+
+- Wifi. There were a lot of people at the lab when we record the videos, sometimes I failed to build my images and connect to my robot. Because of this, I decreased the detection frequency to 1 per second and use more odometry, which prunes to errors sometimes.
+- The estimated April tag location based on the detection result. There's always going to be an error here since you cannot estimate the tag location perfectly.
+
+3. What other approaches could you use to improve localization?
+
+- It would be nice to have more than one camera, just like when you use 2 eyes to observe the world, you can always get a better sense of where things are located, then you can get a better sense of where you are located. 
+- Use lane following instead of keyboard control. Control the robot manually usually make the odometry more confusing since you can accidentally make a turn too over and need to adjust back to the right direction, I did this multiple times and it always makes the odometry lost completely.
+- Optimize our detector to make it faster.
+
+# What I learned from this exercise
+
+For this exercise I learned how to implement PID control for following the lanes within Duckietown. Moreover, I learned how to reuse the existing lane following pipeline to implement my own lane following node using PID control.
 
 # Repo Link
 
-[Exercise 3 repository link (TODO)]()
+[Exercise 3 repository link](https://github.com/liqianxi/503_ex3)
 
 # References
 
