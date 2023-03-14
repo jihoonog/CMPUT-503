@@ -17,6 +17,12 @@ This is the third lab assignment of the course.
 * Jihoon Og
 * Qianxi Li
 
+# Exercise 4 Don't Crash! Trailing Behaviour
+
+For this exercise we were tasked on implementing a fallowing behaviour on the Duckiebot where it will follow a leader bot if it detects one around the Duckietown environment.
+This involves combining different components from previous exercises such as lane following, Apriltag detection, and custom LED emitter patterns.
+
+
 # Video
 
 Embed video link
