@@ -20,3 +20,7 @@ Exercise 2 is where we made our own custom ROS nodes for moving the robot around
 ## Exercise 3
 
 Exercise 3 is where we implement our own computer vision and sensor fusion for localization and lane following.
+
+## Exercise 4
+
+Exercise 4 is where we implement a crash avoidance and leader following mechanism for our Duckiebots. It's a combination of work from previous exercises.
