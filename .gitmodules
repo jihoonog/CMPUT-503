@@ -4,3 +4,9 @@
 [submodule "exercise-3"]
 	path = exercise-3
 	url = git@github.com:liqianxi/503_ex3.git
+[submodule "exercise-4"]
+	path = exercise-4
+	url = git@github.com:jihoonog/CMPUT-503-Exercise-4.git
+[submodule "exercise-5"]
+	path = exercise-5
+	url = git@github.com:jihoonog/CMPUT-503-Exercise-5.git
