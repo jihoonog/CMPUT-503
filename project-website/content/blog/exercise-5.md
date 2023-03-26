@@ -67,7 +67,7 @@ There is room for improvement since 100 channels may not be necessary for our ta
 
 The video below shows our Duckiebot driving around the Duckietown environment detecting and identifying the numbers and stopping once all 10 digits have been correctly identified.
 
-{{ youtube -nBV8Ve5ynU }}
+{{< youtube -nBV8Ve5ynU >}}
 
 As you can see in the video, the Duckiebot starts from a random location in Duckietown, and start to do lane following automatically. It will also detect the Apriltags and the numbers with blue backgrounds. Once both are detected, the Apriltag's location and the number detection's result will be printed out to the terminal, the detection history will also be memorized. The bounding box of the detected number will be visible through RViz. The Duckiebot randomly makes a turn or goes straight at intersections to explore the whole Duckietown, once all 10 figures are found, all nodes terminate. Overall it finished the task, but there were some problems with the system design which we will discuss them below.
 
