@@ -10,3 +10,6 @@
 [submodule "exercise-5"]
 	path = exercise-5
 	url = git@github.com:jihoonog/CMPUT-503-Exercise-5.git
+[submodule "final-project"]
+	path = final-project
+	url = git@github.com:jihoonog/CMPUT-503-Final-Project.git
