@@ -87,7 +87,7 @@ We can see from the video that sometimes the detection cannot be done quickly. S
 Our implemented strategy could finish the task, it's okay to use but not perfect and not 100% reliable. Some situations could make it perform poorly:
 
 1. Network issue (for sure), high delay in communication.
-2. Having someone wearing a shirt with the same blue color as the figure background has. (We can give more restricts to the detection region to solve this problem, but yes, our current design cannot handle this :( ). The bounding box detector can also be senstive to the light condition in the room.
+2. Having someone wearing a shirt with the same blue color as the figure background has. We can give more restricts to the detection region to solve this problem, but yes, our current design cannot handle this :( ). The bounding box detector can also be senstive to the light condition in the room.
 3. Driving too fast can make it miss the target.
 
 ## Repo Link

@@ -24,3 +24,11 @@ Exercise 3 is where we implement our own computer vision and sensor fusion for l
 ## Exercise 4
 
 Exercise 4 is where we implement a crash avoidance and leader following mechanism for our Duckiebots. It's a combination of work from previous exercises.
+
+## Exercise 5
+
+Exercise 5 is where we implement a machine learning model that can detect single numerical digits posted around Duckietown.
+
+## Final Project
+
+For our final project we combined all that we've learned from the previous exercise to program our bot to drive through a driving course at park at the end.
