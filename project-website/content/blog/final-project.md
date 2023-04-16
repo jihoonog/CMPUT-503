@@ -87,7 +87,7 @@ Below shows a video demo of our bot doing all three stages.
 
 ## Repo Link
 
-[Exercise 5 repository link](https://github.com/jihoonog/CMPUT-503-Final-Project)
+[Final project repository link](https://github.com/jihoonog/CMPUT-503-Final-Project)
 
 ## References
 
