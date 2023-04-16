@@ -31,4 +31,4 @@ Exercise 5 is where we implement a machine learning model that can detect single
 
 ## Final Project
 
-For our final project we combined all that we've learned from the previous exercise to program our bot to drive through a driving course at park at the end.
+For our final project we combined all that we've learned from the previous exercise to program our bot to drive through a driving course and park at the end.

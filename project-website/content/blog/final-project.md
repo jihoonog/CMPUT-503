@@ -46,6 +46,7 @@ The diagram below shows the 4 different stalls and the path to park in them.
 
 # Implementation strategies
 
+Here we briefly describe our implementation for the final project.
 ## Detection
 
 To make the Duckiebot see, we utilized multiple different techniques for detecting different kinds of objects.
@@ -67,6 +68,16 @@ This was prett straightforward, the Apriltag detector has been used in many task
 ### Yellow duck and blue lane for pedestrian crossing
 
 Instead of using machine learning techniques to do the duck detection, we just used a simple color masks to mask out everything that is not yellow. The high-level idea is: first, we detect the stop sign Apriltag, then we detect the blue pedestrian crossing using the color mask, since the blue is unique around the stop sign Apriltag we just need to know whether there's something blue in the image and on the road. Next, for the duck detection, we just need to know whether there's something yellow in the image and on the blue lane, so color masking was used to find the ducks. However, because the yellow colour of the duck is similar to the yellow color of the median, we added an area threshold to only detect yellow that is big enough to be rubber duck sized and not a yellow lane marking.
+
+## Parking
+
+For parking we store all the parking stalls in a list where the stall number corresponds to the index representing the Apriltag ID for the stall.
+Parking is initiated based on the successful detection of the Apriltag that at the entrance of the parking lot.
+After stopping at the entrance of the parking lot it then drives into the parking lot making a right or left turn based on the stall number then using the Apriltag pose in robot frame, drive into the stall using the lateral distance (y) and rotational offset on the z axis to make correctional movements using PID control drive into the stall. This works okay if the robot is not too far off center both lateral and rotationally. As we didn't have much time to tune the PID control for driving into the parking stall correctly. Moreover, if the camera lost track of the Apriltag from either getting too close and going out of view or too far away then it will constantly generate the same control output as we didn't implement a timeout mechanism.
+
+## PID
+
+For PID control for lane following we used the same settings and mechanism as in exercise 3 as it worked very well. We tried to implement PID control for velocity and for parking but due to time limitations we couldn't implement them well in time.
 
 ## Video demo
 
