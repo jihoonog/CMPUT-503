@@ -13,3 +13,6 @@
 [submodule "final-project"]
 	path = final-project
 	url = git@github.com:jihoonog/CMPUT-503-Final-Project.git
+[submodule "grad-project"]
+	path = grad-project
+	url = git@github.com:jihoonog/CMPUT-503-Grad-Project.git
