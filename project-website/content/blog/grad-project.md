@@ -1,6 +1,6 @@
 ---
 author: "Jihoon Og"
-title: "Grad Project"
+title: "Grad Final Project"
 date: 2023-04-26
 description: "CMPUT-503 Grad Project"
 tags: ["programming", "ROS", "constrained computing", "tiny ml", "mnist"]
@@ -11,11 +11,14 @@ math: true
 ShowBreadCrumbs: false
 ---
 
-# Grad Project
+# Grad Final Project
 
+This is my final grad project for the course, it's an extension of lab exercise 5 where we used a machine learning model to predict single digit numbers that was trained on MNIST.
+For this project I decided to run the model directly on the Duckiebot as our previous lab exercise ran the model on a laptop that was getting data from the duckiebot.
 
-![NN model architecture](/uploads/NN-mode-arch.png)
+Below is the model architecture that was used to run on the duckiebot.
 
+![NN model architecture](/uploads/NN-model-arch.png)
 
 ## Video demo
 
